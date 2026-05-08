@@ -37,10 +37,14 @@ async function getSectoresXTurnoByDate(req:Request,res:Response){
         const sectores = await em
         .createQueryBuilder(Sector, 's')
         .leftJoinAndSelect(
-            's.turnos', 't',{ fecha: req.params.fecha } )
+            's.turnos', 't',
+            { fecha: req.params.fecha }
+         )
         .leftJoinAndSelect('t.guardia', 'g')
         .getResult();
         res.status(201).json(sectores)
+        console.log(sectores)
+        console.log("sectores ya se  mostraron")
     }catch(e){
         console.log(e)
         res.status(500).json({ status: 500, message:e})

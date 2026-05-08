@@ -8,7 +8,7 @@ sectorRouter.get('/', getAll)
 sectorRouter.post('/',sanitizarInputSector, add)
 sectorRouter.post('/:cod_sector',sanitizarInputSector, modificar)
 sectorRouter.get('/:cod_sector', getOne)
-sectorRouter.get('/:fecha', getSectoresXTurnoByDate)
+sectorRouter.get('/turnos/:fecha', getSectoresXTurnoByDate)
 sectorRouter.delete('/:cod_sector', deleteOne)
 
 
@@ -179,7 +179,7 @@ sectorRouter.delete('/:cod_sector', deleteOne)
 *                status: 500
 *                message: "Error Inesperado"
 * 
-* /sectores/{fecha}:
+* /sectores/turnos/{fecha}:
 *   get:
 *     tags: [Sector]
 *     summary: Get one sector
