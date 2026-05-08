@@ -6,22 +6,13 @@ export class Administrador {
     cod_administrador !: number
     
     @Property({ nullable: false})
-    nombre !: string 
-    
-    @Property({ nullable: false})
     especial !: boolean
 
-    @Property({ nullable: false})
-    apellido !: string
+    @Property({ nullable: false, unique:true})
+    email !: string
 
     @Property({ nullable: false})
-    dni !: number
-
-    @Property({ nullable: false})
-    fechaIniContrato !: Date
-
-    @Property({ nullable: true})
-    fechaFinContrato ?: Date
+    fechaCreacion !: Date
 
     @Property({nullable: false})
     contrasenia !: string

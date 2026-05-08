@@ -5,6 +5,7 @@ import { Administrador } from '../administrador/administrador.entity.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { LogInSchema } from "./login.schema.js"
+import bcrypt from "bcrypt"
 import * as v from "valibot"
 dotenv.config()
 
@@ -15,7 +16,7 @@ function input_sanitizer(req: Request, res:Response, next:NextFunction){
         console.log(e)
           if (v.isValiError<typeof LogInSchema>(e)) {
          console.log(e.issues);
-         res.status(401).json({status:401, message:"Error de Schema"})
+         res.status(401).json({status:401, message:e.issues[0].message})
          return
   }
     }
@@ -34,16 +35,16 @@ em.getRepository(Administrador)
 async function logIn(req: Request, res: Response){
     // SE GENERA EL TOKEN Y E ENVIA AL CLIENTE
     try {
-        const [nombre,codigo] = req.body.user_name.split("_")
-        const cod_administrador = Number.parseInt( codigo ) 
-        const administrador = await em.findOneOrFail(Administrador, { cod_administrador })
-    if(administrador.nombre!==nombre) return res.status(401).json({ status: 401, message: "Nombre de usuario incorrecto"} )
+        const email = req.body.user_name //email
+        const administrador = await em.findOneOrFail(Administrador, { email })
+    if(!administrador) return res.status(401).json({ status: 401, message: "Email incorrecto"} )
         const jwtToken = generateToken(Object.assign({},administrador))
-        if(administrador.contrasenia === req.body.password){
+    const valid_password = await bcrypt.compare(req.body.password, administrador.contrasenia);
+        if(valid_password){
             res.status(202).json(
               { 
                 status: 202,
-                data:{ nombre:administrador.nombre,
+                data:{ email:administrador.email,
                        especial:administrador.especial } ,
                 token: jwtToken
               } )

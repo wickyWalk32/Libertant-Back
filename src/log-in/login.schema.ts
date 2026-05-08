@@ -6,7 +6,7 @@ export const LogInSchema = v.object({
     v.trim(),
     v.minLength(4),
     v.maxLength(35),
-    v.regex(/^(?=.*_)[a-zA-Z0-9._-]+$/)
+    v.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Formato de email Invalido')
   ),
     password: v.pipe(
     v.string(),

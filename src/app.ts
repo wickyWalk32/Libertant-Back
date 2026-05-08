@@ -23,6 +23,7 @@ import { corsOptions } from './shared/cors.options.js'
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./../swagger.js";
 import { loginRouter } from './log-in/log-in.routes.js'
+import { bootstrapAdmin } from './administrador/administrador.controller.js'
 
 
 //misc
@@ -56,9 +57,10 @@ app.use('/turnos', turnoRouter)
 app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' })
 })
+await bootstrapAdmin()
 
-//await syncSchema()  // solo en etapas de desarrollo  
-  
+// await syncSchema()  // solo en etapas de desarrollo  
+
 // listen
 app.listen(8080, () => {
     console.log('server correctly running at 8080')
