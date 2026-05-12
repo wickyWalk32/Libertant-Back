@@ -73,7 +73,10 @@ export const actividadSchema = v.pipe(
     ),
 
     cant_cupos: v.pipe(
-      v.number(),
+      v.string(),
+      v.transform((value) => Number(value)),
+      v.number('Debe ser un número'),
+      v.number('La cantidad de cupos debe ser un numero'),
       v.minValue(1, 'Debe haber al menos 1 cupo')
     ),
 
