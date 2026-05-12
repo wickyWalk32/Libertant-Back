@@ -29,6 +29,10 @@ export const sectorSchema = v.object({
     v.minLength(1, 'Descripción requerida'),
     v.maxLength(500, 'Máximo 500 caracteres')
   ),
+  habilitado: v.pipe(
+  v.nullable(v.optional(v.boolean())),
+  v.transform((value) => value ?? true)
+),
 
   actividades: v.optional(
     v.array(

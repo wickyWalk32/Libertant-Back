@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { orm } from "../shared/db/orm.js"
 import { Sector } from "./sector.entity.js"
 import { valibot_sector } from "./sector.schema.js"
+import { Turno } from "../turno/turno.entity.js"
 
 const em = orm.em
 em.getRepository(Sector)
@@ -43,8 +44,6 @@ async function getSectoresXTurnoByDate(req:Request,res:Response){
         .leftJoinAndSelect('t.guardia', 'g')
         .getResult();
         res.status(201).json(sectores)
-        console.log(sectores)
-        console.log("sectores ya se  mostraron")
     }catch(e){
         console.log(e)
         res.status(500).json({ status: 500, message:e})
@@ -55,8 +54,7 @@ async function add(req : Request, res : Response){
     try{
         const sector_duplicado = await em.findOne(Sector,req.body.sanitized_input.cod_sector)
         if(sector_duplicado!=null){
-            res.status(409).json({status:409,
-                message:"Error. Ya existe sector con codigo seleccionado"})
+            res.status(409).json({status:409, message:"Error. Ya existe sector con codigo seleccionado"})
             return}
         const sector = em.create(Sector,req.body.sanitized_input)
         await em.persist(sector).flush();
@@ -79,7 +77,8 @@ async function getOne(req: Request, res: Response){
 
 async function modificar(req:Request,res:Response){
     try{
-        const sector = await em.findOne(Sector,{cod_sector: req.params.cod_sector.toUpperCase()})
+        const sector = await em.findOneOrFail(Sector,{cod_sector: req.params.cod_sector.toUpperCase()})
+        if(!sector.habilitado)return res.status(409).json({sataus:409, message:"ERROR: Sector deshabilitado"})
         if(sector!=null){
             em.assign(sector,req.body.sanitized_input)
             await em.flush()
@@ -96,8 +95,20 @@ async function modificar(req:Request,res:Response){
 async function deleteOne(req:Request, res:Response){
     try{
         const cod_sector = req.params.cod_sector
-        await em.nativeDelete(Sector,{cod_sector})
-        res.status(200).json({status:200, message:"Sector Eliminado"})
+        const today = new Date().toISOString().split('T')[0];
+        const turnos = await em.find(Turno,{sector:{cod_sector}})
+        const past_turnos = turnos.filter((t)=>t.fecha<=today)
+        const future_turnos = turnos.filter((t)=>t.fecha>today)
+        if(turnos.length === 0){
+          await em.nativeDelete(Sector,{cod_sector})
+          res.status(200).json({status:200, message:"Sector Eliminado"})
+        }else if(past_turnos.length !== 0){
+          const sector = await em.findOneOrFail(Sector,{cod_sector})
+          em.assign(sector,{habilitado:false,})
+          em.flush()
+          if(future_turnos.length !== 0) await em.nativeDelete(Turno, {sector: {cod_sector},fecha: { $gt: today },});
+          res.status(200).json({status:200, message:"Sector Inhabilitado"})
+        }
     }catch(e){
         console.log(e)
         res.status(500).json({status:500, message:"Error Inesperado"})

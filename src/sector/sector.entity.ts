@@ -13,6 +13,9 @@ export class Sector {
     @Property({ nullable: false, unique: false})
     descripcion !: string
 
+    @Property({ nullable: true, unique: false})
+    habilitado !: boolean
+
     @OneToMany(()=> Actividad ,(actividad)=>actividad.cod_sector)
     actividades:Actividad[]=[]
 

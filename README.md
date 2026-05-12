@@ -1,13 +1,25 @@
 # BackEnd-Proyecto
 
-Integrantes: Biener Guadalupe, Carrizo Gonzalo, Chaparro Ignacio, Koffler Ignacio
+Integrantes: Chaparro Ignacio
 
 Descripción:
 Libertadnt es un sistema de gestión carcelario, se encarga de la administración tanto del personal de seguridad como de los reclusos, cuenta tanto con una base de datos para poder contabilizar e indicar cada preso y su sector asignado, como sus actividades diarias y el personal de seguridad asignado.
 
 # Inicializar Proyecto
 
-Back-End
+Crear archivo .env en carpeta BackEnd-Proyecto y nombrar las siguientes valiables de ambiente:
+
+# Back-End
+
+YOUR_SITE_KEY = site_keykjwcjwhblulbyb7hb
+YOUR_SITE_SECRET_KEY = secret_keysjnijvneirver
+USUARIO_MAIN_EMAIL = juansoyyo@gmail.com
+USUARIO_MAIN_PASSWORD = juansoyyo
+
+# TESTS
+
+VALID_TOKEN_TEST = 'eyferferferferferefr'
+
 Con el terminal (cmd, powershell) ubicarse en la carpeta /BackEnd-Proyecto
 
 - pnpm install
