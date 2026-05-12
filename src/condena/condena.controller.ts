@@ -37,8 +37,9 @@ async function getAll(req : Request, res : Response){
 
 async function getOne(req: Request, res: Response){
     try {
-        const cod_condena =  Number.parseInt(req.params.cod_condena) //
-        const condena = await em.findOne(Condena, { cod_condena })
+        const cod_pena =  Number.parseInt(req.params.cod_pena) //
+        const nro_condena =  Number.parseInt(req.params.nro_condena) //
+        const condena = await em.findOne(Condena, { pena:{cod_pena},nro_condena })
         res.status(201).json({ data: condena} )
     } catch (error: any){
         res.status(500).json({ message: 'error'})
@@ -57,12 +58,13 @@ async function add(req: Request, res: Response){
 
 async function modificar(req: Request, res: Response) {
     try{
-        const cod_condena = Number(req.params.cod_condena)
+        const cod_pena = Number(req.params.cod_pena)
+        const nro_condena = Number(req.params.nro_condena)
         const condena = await em.findOne(Condena,
-             { cod_condena:cod_condena },{ populate: ['pena'] } )
+             { pena:{cod_pena},nro_condena },{ populate: ['pena'] } )
         if(condena !== null && condena.pena !== undefined){
             const pena = condena.pena
-            condena.modificarPena(req.body.sanitized_input,pena.fecha_fin_estimada)
+            condena.modificarPena(req.body.sanitized_input,pena.fecha_fin_estimada as Date)
             em.assign(condena,req.body.sanitized_input)
             await em.flush()
             res.status(200).json({message: "Condena Modificada"})

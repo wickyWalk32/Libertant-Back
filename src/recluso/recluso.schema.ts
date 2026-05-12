@@ -28,6 +28,18 @@ export const reclusoSchema = v.object({
     v.check((date) => !isNaN(date.getTime()), 'Fecha inválida')
   ),
 
+  pena: v.optional(
+    v.object({
+  fecha_ini: v.pipe(
+    v.union([v.string(), v.date()]),
+    v.transform((value) => new Date(value)),
+    v.check((date) => !isNaN(date.getTime()), 'Fecha inválida')
+  ),
+
+  condenas: v.optional(v.array(v.any()))
+    })
+  ),
+
 });
 
 

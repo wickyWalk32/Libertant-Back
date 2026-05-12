@@ -4,11 +4,13 @@ import { Recluso } from "./recluso.entity.js"
 import { Condena } from "../condena/condena.entity.js"
 import { Actividad } from "../actividad/actividad.entity.js"
 import { valibot_recluso } from "./recluso.schema.js"
+import { Pena } from "../pena/pena.entity.js"
 
 const em = orm.em
 em.getRepository(Recluso)
 
 async function sanitizarInputDeRecluso(req: Request, res: Response, next: NextFunction){
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   try{ 
     const incoming = await valibot_recluso(req.body.reclusoData ?? req.body)
     if (!incoming.success){
@@ -75,12 +77,18 @@ async function addReclusoConCondenas(req: Request, res: Response){
     try{
         const elRecluso = await em.findOne(Recluso,{dni:reclusoData.dni})
     if(elRecluso===null){
-        const recluso = em.create(Recluso,reclusoData)
-        const condenas = condenasData.map((condenaData: any) => orm.em.create(Condena, { ...condenaData, recluso }));
-        recluso.asignarPena(condenas)
-        recluso.condenas = condenas
+        let recluso = em.create(Recluso,reclusoData)
+        /*
+        for (const p of reclusoData.penas ?? []) {
+        const pena = em.create(Pena, { ...p, recluso });
 
-        await em.persistAndFlush(recluso)
+        for (const c of p.condenas ?? []) {
+            pena.condenas.add(em.create(Condena, { ...c, pena }));
+        }
+
+        recluso.penas.add(pena);
+        } */
+        await em.persistAndFlush(recluso);
          res.status(201).json({ status: 201, data: recluso.cod_recluso })
         }else{
         res.status(409).json({ status: 409, message: "El Recluso ya existe" })
@@ -119,21 +127,18 @@ async function inscripcionActividad(req:Request,res:Response){
             actividad.reclusos.length >= actividad.cant_cupos){
                 return res.status(409).json({status:409, message: "No hay mas cupos disponibles"})
             }
-
-            //@ts-expect-error
-            recluso.actividades.add(actividad)  // mikro orm lo ve como una collection y typescript como un array :(        
+            recluso.actividades.add(actividad) 
             res.status(200).json({status:200, message:"Recluso Inscripto"})
             }else{
-            //@ts-expect-error
             recluso.actividades.remove(actividad)
             res.status(200).json({status:200, message:"Inscripcion Eliminada"})
             }
             await em.flush()
         }
-        if(recluso===null)res.status(404).json({sataus:404, message:"ERROR: Recluso no encontrado"})
+        if(recluso===null)res.status(404).json({status:404, message:"ERROR: Recluso no encontrado"})
     }catch(error){
         console.log(error)
-        res.status(500).json({sataus:500, message:"Error Inesperado"})
+        res.status(500).json({status:500, message:"Error Inesperado"})
     }
 }
 

@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, ManyToMany, Cascade, Rel, ManyToOne } from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property, ManyToMany, Cascade, Rel, ManyToOne, PrimaryKeyProp } from "@mikro-orm/core";
 import { Recluso } from "../recluso/recluso.entity.js";
 import { Pena } from "../pena/pena.entity.js";
 import { Sector } from "../sector/sector.entity.js";
@@ -7,14 +7,11 @@ import { emit } from "process";
 @Entity()
 export class Condena {
     
-    @ManyToOne(() => Pena, {nullable: true})//{ unique : false, nullable : false, cascade: [Cascade.ALL], owner: false}
-    pena ?: Pena
-    
-    @PrimaryKey( {nullable: false, unique: true})
-    cod_condena !: number
-    
-    @Property( {nullable: false, unique: false} )
-    nombre !: string
+    @ManyToOne(() => Pena, {nullable: false,})
+    pena!: Rel<Pena>;
+
+    @PrimaryKey({autoincrement:true})
+    nro_condena!: number;
     
     @Property( {nullable: true, unique: false} )
     descripcion ?: string
@@ -30,12 +27,6 @@ export class Condena {
     
     @Property( {nullable: false, unique: false} )
     orden_de_gravedad !: number
-    
-    @ManyToOne(() => Recluso,{nullable:true})
-    recluso ?: Rel<Recluso>
-
-    //@ManyToMany(() => Sector, (sector) => sector.condenas, { unique : false, nullable : false, cascade: [Cascade.ALL], owner: false})
-    //sectores !: Sector[] //
 
     //METODOS
     // dada una condena, modificar la pena.fecha_fin_estimada

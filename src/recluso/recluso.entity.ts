@@ -1,5 +1,5 @@
 import 'reflect-metadata'; 
-import { Entity, PrimaryKey, Property, ManyToMany, OneToMany, OneToOne } from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property, ManyToMany, OneToMany, OneToOne, Collection, Cascade } from "@mikro-orm/core";
 import { Actividad } from "../actividad/actividad.entity.js";
 import { Condena } from "../condena/condena.entity.js";
 import { Pena } from "../pena/pena.entity.js";
@@ -21,15 +21,12 @@ export class Recluso {
     
     @Property({ nullable: false})
     fecha_nac !: Date;
-    
-    @OneToMany(() => Condena, condena => condena.recluso, { eager: true})
-    condenas: Condena[] = [];
 
     @ManyToMany(() => Actividad, (actividad) => actividad.reclusos, {eager: true,owner:true}) //, cascade: [Cascade.ALL], owner: false
-    actividades: Actividad[] = [];
+    actividades = new Collection<Actividad>(this);
     
-    @OneToMany(()=>Pena,pena =>pena.recluso,{eager:true})
-    penas: Pena[] = [];
+    @OneToMany(()=>Pena, pena => pena.recluso, {cascade: [Cascade.ALL],eager: true})
+    penas = new Collection<Pena>(this);
     
 
     // METODOS
@@ -52,12 +49,49 @@ export class Recluso {
         pena.fecha_fin_estimada.setFullYear(pena.fecha_fin_estimada.getFullYear() + anios);
         pena.fecha_fin_estimada.setMonth(pena.fecha_fin_estimada.getMonth() + meses);
         pena.fecha_fin_estimada.setDate(pena.fecha_fin_estimada.getDate() + dias);
-        this.penas.push(pena)
+        //this.penas.push(pena)
         condenas.forEach((condena)=>{
           condena.pena = pena
         })
       
   }
+asignarPena_(condenas: Condena[]) {
 
+  let anios = 0;
+  let meses = 0;
+  let dias = 0;
+
+  condenas.forEach((condena) => {
+    anios += condena.duracion_anios;
+    meses += condena.duracion_meses;
+    dias += condena.duracion_dias;
+  });
+
+  const pena = new Pena();
+  pena.recluso = this;
+  const fechaInicio = new Date();
+  pena.fecha_ini = fechaInicio;
+  const fechaFin = new Date(fechaInicio);
+
+  fechaFin.setFullYear(fechaFin.getFullYear() + anios);
+  fechaFin.setMonth(fechaFin.getMonth() + meses);
+  fechaFin.setDate(fechaFin.getDate() + dias);
+
+  pena.fecha_fin_estimada = fechaFin;
+  pena.condenas = new Collection<Condena>(pena);
+  this.penas.add(pena);
+
+  for (const condena of condenas) {
+
+    // si condena NO es entidad, esto es clave:
+    const c = condena instanceof Condena? condena: new Condena();
+    Object.assign(c, condena);
+
+    c.pena = pena;
+    pena.condenas.add(c);
+  }
+
+  return pena;
+}
 }
 

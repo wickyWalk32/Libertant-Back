@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { Actividad } from "./actividad.entity.js"
 import { orm } from "../shared/db/orm.js"
 import { valibot_actividad } from "./actividad.schema.js"
+import { Sector } from "../sector/sector.entity.js"
 
 const em = orm.em
 
@@ -49,7 +50,9 @@ async function add(req: Request, res: Response){
         if(cant_act_per_day>=3){
        return res.status(409).json({status:409 ,message:'Excede la Cantidad Maxima de Actividades por Dia'})
         }
-        em.create(Actividad,req.body)
+        const sector = await em.find(Sector,{cod_sector:req.body.sanitized_input.cod_sector})
+        if(sector.length===0)return res.status(409).json({status:409 ,message:'El Sector No esta cargado'})
+        em.create(Actividad,req.body.sanitized_input)
         await em.flush()
         res.status(201).json({status:201,message:'Actividad Creada'})
     } catch (error: any) {

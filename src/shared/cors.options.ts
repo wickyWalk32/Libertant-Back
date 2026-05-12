@@ -1,5 +1,9 @@
 //options for cors midddleware
 import cors from 'cors'
+import dotenv from 'dotenv'
+
+const FRONTEND_URL = process.env.FRONTEND_URL
+
 export const corsOptions: cors.CorsOptions = {
   allowedHeaders: [
     'Origin',
@@ -11,6 +15,6 @@ export const corsOptions: cors.CorsOptions = {
   ],
   credentials: true,
   methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-  origin: "http://localhost:4200",
+  origin: `${FRONTEND_URL}`,
   preflightContinue: false,
 };
