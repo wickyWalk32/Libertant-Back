@@ -3,6 +3,7 @@ import { orm } from "../shared/db/orm.js"
 import { Sector } from "./sector.entity.js"
 import { valibot_sector } from "./sector.schema.js"
 import { Turno } from "../turno/turno.entity.js"
+import { Actividad } from "../actividad/actividad.entity.js"
 
 const em = orm.em
 em.getRepository(Sector)
@@ -100,8 +101,18 @@ async function deleteOne(req:Request, res:Response){
         const past_turnos = turnos.filter((t)=>t.fecha<=today)
         const future_turnos = turnos.filter((t)=>t.fecha>today)
         if(turnos.length === 0){
-          await em.nativeDelete(Sector,{cod_sector})
-          res.status(200).json({status:200, message:"Sector Eliminado"})
+            const sector =  await em.findOne(Sector,{cod_sector},{populate:['actividades']})
+            if(sector !==null){
+                if(sector.actividades.length===0){
+                    await em.nativeDelete(Sector,{cod_sector})
+                    res.status(200).json({status:200, message:"Sector Eliminado"})
+                }else{
+                    em.assign(sector,{habilitado:false,})
+                    em.flush()
+                    await em.nativeDelete(Actividad,{cod_sector: {cod_sector}});
+                    res.status(200).json({status:200, message:"Sector Inhabilitado"})                    
+                }
+            }
         }else if(past_turnos.length !== 0){
           const sector = await em.findOneOrFail(Sector,{cod_sector})
           em.assign(sector,{habilitado:false,})
