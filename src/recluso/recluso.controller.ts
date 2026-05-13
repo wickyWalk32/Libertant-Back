@@ -10,7 +10,6 @@ const em = orm.em
 em.getRepository(Recluso)
 
 async function sanitizarInputDeRecluso(req: Request, res: Response, next: NextFunction){
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   try{ 
     const incoming = await valibot_recluso(req.body.reclusoData ?? req.body)
     if (!incoming.success){

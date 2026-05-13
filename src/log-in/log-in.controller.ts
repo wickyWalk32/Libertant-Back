@@ -11,7 +11,7 @@ dotenv.config()
 
 function input_sanitizer(req: Request, res:Response, next:NextFunction){
     try{
-        v.parse(LogInSchema, req.body)
+        req.body.sanitized_input = v.parse(LogInSchema, req.body)
     }catch (e){
         console.log(e)
           if (v.isValiError<typeof LogInSchema>(e)) {
@@ -55,4 +55,29 @@ async function logIn(req: Request, res: Response){
         res.status(404).json({ status: 404, message: "Usuario no encontrado"} )
     }
 }
-export { logIn, generateToken, input_sanitizer }
+
+
+async function verifyCaptcha(req: Request, res: Response,next:NextFunction){
+  const secret = process.env.YOUR_SITE_SECRET_KEY;
+  const params = new URLSearchParams();
+  params.append("secret", secret!);
+  params.append("response", req.body.sanitized_input.captchaToken);
+  const response = await fetch(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: params
+    }
+  );
+
+  const data = await response.json();
+  console.log("captcha result:", data);
+    if (!data.success) {
+      return res.status(403).json({message: "Captcha verification failed",});
+    }
+    next()
+}
+export { logIn, generateToken, input_sanitizer,verifyCaptcha }

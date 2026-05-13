@@ -18,6 +18,8 @@ export const reclusoSchema = v.object({
   ),
 
   dni: v.pipe(
+    v.union([v.string(), v.number()]),
+    v.transform((value)=>Number(value)),
     v.number(),
     v.minValue(10000000, 'DNI inválido')
   ),

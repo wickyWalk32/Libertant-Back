@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { logIn } from "./log-in.controller.js";
+import { logIn, verifyCaptcha } from "./log-in.controller.js";
 import { input_sanitizer } from "./log-in.controller.js";
 
 export const loginRouter = Router()
-loginRouter.post('/',input_sanitizer, logIn)
+loginRouter.post('/',input_sanitizer,verifyCaptcha, logIn)
 
 
 

@@ -13,5 +13,9 @@ export const LogInSchema = v.object({
     v.minLength(4),
     v.maxLength(35),
     v.regex(/^[a-zA-Z0-9]+$/)
+  ),
+  captchaToken: v.pipe(
+    v.string('El token debe ser string'),
+    v.minLength(1,'El token esta vacio'),
   )
 })

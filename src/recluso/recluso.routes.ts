@@ -7,7 +7,7 @@ export const reclusoRouter = Router()
 reclusoRouter.get('/', getAll)
 reclusoRouter.post('/',sanitizarInputDeRecluso, addReclusoConCondenas)
 reclusoRouter.get('/:id', getOne)
-reclusoRouter.put('/:id', putRecluso)
+reclusoRouter.put('/:id',sanitizarInputDeRecluso, putRecluso)
 reclusoRouter.put('/:id/inscripcion', inscripcionActividad)
 reclusoRouter.put('/:id/liberar', isSpecialAdmin,liberarRecluso)
 

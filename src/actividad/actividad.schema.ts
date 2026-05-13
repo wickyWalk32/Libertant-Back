@@ -35,6 +35,7 @@ export const actividadSchema = v.pipe(
     dia_de_la_semana: v.pipe(
       v.string(),
       v.trim(),
+      v.transform((value)=>value.toLowerCase()),
       v.picklist(
         [
           'lunes',
@@ -73,11 +74,10 @@ export const actividadSchema = v.pipe(
     ),
 
     cant_cupos: v.pipe(
-      v.string(),
+      v.union([v.string(), v.number()]),
       v.transform((value) => Number(value)),
-      v.number('Debe ser un número'),
-      v.number('La cantidad de cupos debe ser un numero'),
-      v.minValue(1, 'Debe haber al menos 1 cupo')
+      v.number('La cantidad de cupos debe ser un número'),
+      v.minValue(5, 'Debe haber al menos 5 cupos')
     ),
 
     cod_sector: v.pipe(
