@@ -7,14 +7,27 @@ Libertadnt es un sistema de gestión carcelario, se encarga de la administració
 
 # Inicializar Proyecto
 
-Crear archivo .env en carpeta BackEnd-Proyecto y nombrar las siguientes valiables de ambiente:
+## Variables de ambiente (.env)
+
+Crear archivo .env en carpeta BackEnd-Proyecto y nombrar las siguientes valiables de ambiente (ejemplo):
 
 ### Back-End
 
-- API_URL = 'localhost:3306/'
+- API_URL = 'localhost:8080/'
 - FRONTEND_URL= 'http://localhost:4200'
-- YOUR_SITE_KEY = site_keykjwcjwhblulbyb7hb
-- YOUR_SITE_SECRET_KEY = secret_keysjnijvneirver
+- DATABASE_PASSWORD = "password"
+
+  #### jwt
+
+- SECRET_KEY = clave_secreta_para_generar_verificar_token
+
+  #### Captcha
+
+- YOUR_SITE_KEY = clave_publica_del_google_captcha
+- YOUR_SITE_SECRET_KEY = clave_secreta_del_google_captcha
+
+#### Usuario precargado con todos los permisos
+
 - USUARIO_MAIN_EMAIL = juansoyyo@gmail.com
 - USUARIO_MAIN_PASSWORD = juansoyyo
 
@@ -22,18 +35,17 @@ Crear archivo .env en carpeta BackEnd-Proyecto y nombrar las siguientes valiable
 
 - VALID_TOKEN_TEST = 'eyferferferferferefr'
 
+## EJECUTAR APLICACION
+
 Con el terminal (cmd, powershell) ubicarse en la carpeta /BackEnd-Proyecto
 
 - pnpm install
 - pnpm start
 
-Front-End
-Con el terminal (cmd, powershell) ubicarse en la carpeta /FrontEnd-Proyecto
+## Ejecutar Tests
 
-- pnpm install
-- pnpm start
-
-Ir a http://localhost:4200/ e ingresar con usuario y contraseña
+- pnpm testdb (activar mikroorm en db de testing)
+- pnpm test (Para ejecutar los tests armados con jest)
 
 # Documentacion
 

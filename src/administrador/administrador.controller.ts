@@ -27,7 +27,7 @@ function sanitizarInputDeAdministrador(req: Request, res: Response, next: NextFu
 
 async function getAll(req:Request, res:Response){
     try{
-        const administradores = await em.getConnection().execute(`select * from administrador admin where admin.fecha_fin_contrato is null;`);
+        const administradores = await em.find(Administrador,{})
         res.status(201).json({ status: 201, data: administradores})
     } catch (error: any) {
         res.status(404).json({  status: 404})
@@ -44,9 +44,8 @@ async function getOne(req: Request, res: Response){
         res.status(500).json({ message: error.message})
     }
 }
-//function generateToken(userData:Administrador){
-//    return jwt.sign(userData,process.env.SECRET_KEY as string) 
-//}
+
+
 async function bootstrapAdmin(){
     try{
         const email = process.env.USUARIO_MAIN_EMAIL

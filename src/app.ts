@@ -15,7 +15,6 @@ import { administradorRouter } from './administrador/administrador.routes.js'
 import { penaRouter } from './pena/pena.routes.js'
 import { reclusoRouter } from './recluso/recluso.routes.js'
 import { turnoRouter } from './turno/turno.routes.js'
-import { logIn } from './log-in/log-in.controller.js'
 import { verificarToken } from './shared/verification/tokenVeryfication.js'
 
 import { config } from './shared/db/orm.config.js'

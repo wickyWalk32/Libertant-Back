@@ -16,11 +16,9 @@ import { penaRouter } from '../src/pena/pena.routes.js'
 import { reclusoRouter } from '../src/recluso/recluso.routes.js'
 import { turnoRouter } from '../src/turno/turno.routes.js'
 import { verificarToken } from '../src/shared/verification/tokenVeryfication.js'
-import { initORM } from '../src/shared/db/orm.db.js'
-import { config, config_test } from '../src/shared/db/orm.config.js'
+import { config_test } from '../src/shared/db/orm.config.js'
 import { corsOptions } from '../src/shared/cors.options.js'
 import { MikroORM } from '@mikro-orm/mysql'
-import { eventNames } from 'process'
 
 
 

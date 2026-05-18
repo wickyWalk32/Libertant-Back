@@ -77,16 +77,6 @@ async function addReclusoConCondenas(req: Request, res: Response){
         const elRecluso = await em.findOne(Recluso,{dni:reclusoData.dni})
     if(elRecluso===null){
         let recluso = em.create(Recluso,reclusoData)
-        /*
-        for (const p of reclusoData.penas ?? []) {
-        const pena = em.create(Pena, { ...p, recluso });
-
-        for (const c of p.condenas ?? []) {
-            pena.condenas.add(em.create(Condena, { ...c, pena }));
-        }
-
-        recluso.penas.add(pena);
-        } */
         await em.persistAndFlush(recluso);
          res.status(201).json({ status: 201, data: recluso.cod_recluso })
         }else{
