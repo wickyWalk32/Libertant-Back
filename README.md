@@ -15,7 +15,15 @@ Crear archivo .env en carpeta BackEnd-Proyecto y nombrar las siguientes valiable
 
 - API_URL = 'localhost:8080/'
 - FRONTEND_URL= 'http://localhost:4200'
+
+#### DATABASE
+
 - DATABASE_PASSWORD = "password"
+- DATABASE_HOST = localhost
+- DATABASE_PORT = 3306
+- DATABASE_NAME = libertant
+- DATABASE_USERNAME = "username"
+- DATABASE_TEST_NAME = libertant_test
 
   #### jwt
 
