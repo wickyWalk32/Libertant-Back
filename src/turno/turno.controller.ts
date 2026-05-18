@@ -147,7 +147,8 @@ function getFechasDeDiasSemana(days:number[]) {
   const today = new Date();
   const current = new Date(today);
 
-  current.setDate(current.getDate() + 1); // dia siguiente
+  current.setDate(current.getDate()); // dia siguiente
+  // current.setDate(current.getDate() + 1); // dia siguiente
 
   const end = new Date(today);
   end.setMonth(end.getMonth() + 2); // +2 meses

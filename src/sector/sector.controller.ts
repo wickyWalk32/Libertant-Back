@@ -27,7 +27,7 @@ async function sanitizarInputSector(req: Request, res: Response, next: NextFunct
 
 async function getAll(req:Request, res:Response){
     try{
-        const sectores = await em.find(Sector, {})
+        const sectores = await em.find(Sector, {habilitado:true})
         res.status(201).json(sectores)
     } catch (e:any) {
         res.status(404).json({ status: 404, message:e.error})
@@ -43,6 +43,7 @@ async function getSectoresXTurnoByDate(req:Request,res:Response){
             { fecha: req.params.fecha }
          )
         .leftJoinAndSelect('t.guardia', 'g')
+        .where('s.habilitado = ?', [true])
         .getResult();
         res.status(201).json(sectores)
     }catch(e){

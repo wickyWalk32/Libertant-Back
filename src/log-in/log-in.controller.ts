@@ -29,6 +29,7 @@ function input_sanitizer(req: Request, res:Response, next:NextFunction){
 function generateToken(userData:Administrador){
     return jwt.sign(userData,process.env.SECRET_KEY as string) 
 }
+// , {expiresIn: '1h'}
 
 const em = orm.em
 em.getRepository(Administrador)
